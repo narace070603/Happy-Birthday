@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Happy Birthday!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500&family=Patrick+Hand&family=Sniglet:wght@800&display=swap" rel="stylesheet">
+<style>
+:root{--pink:#cd638c;--green:#688030;--green-d:#4f6322;--lpink:#f4a6c4;--cream:#fff8f0}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--pink);color:#fff;font-family:'Patrick Hand','Comic Sans MS',cursive;overflow-x:hidden}
+body.locked{overflow:hidden;height:100vh}
+
+/* ---------- cover ---------- */
+#cover{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:30px 20px 90px;background:var(--pink);position:relative}
+#cover h1{font-family:'Lora',serif;font-weight:400;font-size:clamp(34px,6vw,52px);letter-spacing:.5px;text-align:center}
+#cover .sub{font-size:clamp(22px,3.5vw,28px);font-style:italic;margin-top:-6px;transform:rotate(-3deg);opacity:.95}
+#env{margin-top:40px;width:min(340px,78vw);aspect-ratio:1.55;position:relative;cursor:pointer;transform:rotate(-4deg);transition:transform .4s;border:0;background:none;perspective:900px}
+#env:hover{transform:rotate(-2deg) scale(1.03)}
+#env svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 10px 14px rgba(60,20,40,.25))}
+#flap{transform-origin:50% 0;transition:transform .8s cubic-bezier(.5,0,.3,1)}
+#seal{transition:opacity .4s,transform .4s;transform-origin:50% 50%}
+#env.open #flap{transform:rotateX(180deg)}
+#env.open #seal{opacity:0;transform:scale(1.6)}
+#env.open{animation:none;transform:rotate(0) translateY(20px) scale(1.05)}
+#paper{position:absolute;left:10%;right:10%;top:8%;height:80%;z-index:0;background:var(--cream);border-radius:6px;box-shadow:0 4px 12px rgba(60,20,40,.2);transition:transform 1.1s .5s cubic-bezier(.3,.8,.3,1);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;color:var(--green);font-size:30px;text-align:center}
+#paper small{font-size:18px;color:var(--pink)}
+#env.open #paper{transform:translateY(-88%) rotate(2deg)}
+#env.open #paper.out{z-index:3}
+#env svg.front{z-index:1}
+#cover h1,#cover .sub{transition:opacity .6s}
+#cover.opened h1,#cover.opened .sub{opacity:0}
+.hint{position:absolute;display:flex;align-items:center;gap:8px;font-size:17px;text-align:center;line-height:1.1;margin-top:14px;transition:opacity .3s}
+.hint svg{width:34px;height:34px}
+#hintWrap{margin-top:6px;display:flex;justify-content:center;margin-left:150px}
+.hint{position:static}
+#env.open + #hintWrap{opacity:0}
+
+/* ---------- drips ---------- */
+.drip{display:block;width:100%;height:150px;position:absolute;left:0;right:0;pointer-events:none}
+.drip.top{top:-1px}
+
+/* ---------- letter ---------- */
+#main{display:none}
+#main.show{display:block}
+#letter{background:var(--green);position:relative;padding:150px 20px 120px;min-height:100vh}
+#letter .wrap{max-width:860px;margin:0 auto}
+#text,.sign{max-width:600px;margin-left:auto;margin-right:auto}
+.title-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:60px;flex-wrap:wrap}
+.hatface{position:relative;width:250px;height:290px;flex:none}
+.hatface .face{position:absolute;left:52px;top:94px;width:144px;transform:rotate(-2deg);filter:drop-shadow(0 3px 4px rgba(0,0,0,.25))}
+.hatface .hat{position:absolute;left:44px;top:-6px;width:152px;transform:rotate(-3deg)}
+.hatface .balloons{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated}
+h2.hb{font-family:'Sniglet','Chewy','Comic Sans MS',cursive;font-weight:800;font-size:clamp(40px,8vw,62px);line-height:1.12;letter-spacing:5px;text-align:center;color:#fff;white-space:nowrap}
+#letter p{font-size:clamp(18px,2.6vw,21px);line-height:1.85;margin-bottom:24px;letter-spacing:.6px}
+#letter p.dear{margin-bottom:22px}
+.w{opacity:.12;transition:opacity .5s}
+.w.on{opacity:1}
+.sign{text-align:right;margin-top:40px;font-size:20px;line-height:1.5}
+
+/* ---------- jar ---------- */
+#jarsec{background:var(--pink);position:relative;padding:150px 20px 150px;text-align:center;min-height:100vh}
+#jarsec h3{font-family:'Lora',serif;font-weight:500;font-size:clamp(30px,5vw,42px)}
+#jarsec .s{font-size:18px;opacity:.95;max-width:260px;margin:10px auto 36px;letter-spacing:.8px;line-height:1.5}
+#jarbox{position:relative;width:180px;height:330px;margin:0 auto;transition:transform .1s}
+#jarbox.shake{animation:jshake .6s}
+@keyframes jshake{0%,100%{transform:rotate(0)}15%{transform:rotate(-9deg) translateX(-8px)}35%{transform:rotate(8deg) translateX(8px)}55%{transform:rotate(-6deg) translateX(-5px)}75%{transform:rotate(4deg)}}
+#jar{position:absolute;left:0;right:0;bottom:0;height:300px;border-radius:44px 44px 24px 24px;background:rgba(255,255,255,.28);border:3px solid rgba(255,255,255,.55);box-shadow:inset 0 -10px 20px rgba(255,255,255,.12)}
+#jar::before{content:"";position:absolute;left:14px;top:34px;width:11px;height:150px;border-radius:8px;background:rgba(255,255,255,.4)}
+#neck{position:absolute;left:50%;transform:translateX(-50%);top:14px;width:66px;height:44px;background:rgba(255,255,255,.28);border:3px solid rgba(255,255,255,.55);border-bottom:0;border-radius:6px 6px 0 0}
+#cap{position:absolute;left:50%;transform:translateX(-50%);top:0;width:62px;height:18px;background:var(--green);border-radius:5px}
+#notes{position:absolute;left:0;right:0;bottom:0;height:300px;overflow:hidden;border-radius:44px 44px 24px 24px}
+.note{position:absolute;left:0;top:0;width:40px;height:40px;border-radius:10px;border:0;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.18);will-change:transform;touch-action:manipulation}
+.note svg{width:24px;height:24px}
+.note.g{background:var(--green)} .note.c{background:var(--cream)} .note.p{background:var(--lpink)}
+.note.read{opacity:.55;filter:saturate(.5)}
+.btn{margin-top:28px;font-family:'Patrick Hand';font-size:21px;color:#fff;background:var(--green);border:0;padding:12px 30px;border-radius:30px;cursor:pointer;box-shadow:0 5px 0 var(--green-d);letter-spacing:1px;transition:transform .1s,box-shadow .1s}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--green-d)}
+footer{margin-top:60px;font-size:16px;opacity:.85}
+
+/* ---------- modal ---------- */
+#modal{position:fixed;inset:0;background:rgba(40,15,30,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:24px}
+#modal.show{display:flex}
+#card{background:var(--cream);color:var(--green-d);max-width:340px;width:100%;border-radius:20px;padding:32px 28px 26px;text-align:center;animation:pop .35s cubic-bezier(.3,1.6,.5,1);box-shadow:0 14px 40px rgba(0,0,0,.3)}
+@keyframes pop{from{transform:scale(.5) rotate(-6deg);opacity:0}to{transform:none;opacity:1}}
+#card .ic{width:54px;height:54px;border-radius:14px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;background:var(--green)}
+#card .ic svg{width:32px;height:32px}
+#card p{font-size:21px;line-height:1.55;margin-bottom:20px}
+#card button{font-family:'Patrick Hand';font-size:18px;background:var(--pink);color:#fff;border:0;border-radius:22px;padding:8px 24px;cursor:pointer}
+
+/* ---------- player ---------- */
+#player{position:fixed;left:14px;bottom:14px;z-index:40;display:flex;align-items:center;gap:10px;background:var(--green-d);padding:8px 10px 8px 8px;border-radius:40px;box-shadow:0 6px 18px rgba(0,0,0,.3);max-width:calc(100vw - 28px);color:#fff}
+#disc{width:34px;height:34px;border-radius:50%;background:radial-gradient(circle,var(--pink) 0 22%,#1c1c1c 24%);flex:none;animation:spin 3s linear infinite paused}
+#player.playing #disc{animation-play-state:running}
+@keyframes spin{to{transform:rotate(360deg)}}
+#meta{line-height:1.1;min-width:0;max-width:150px}
+#meta b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.4px}
+#meta span{font-size:12px;color:var(--lpink);white-space:nowrap}
+#eq{display:flex;align-items:flex-end;gap:2px;height:14px}
+#eq i{width:3px;background:var(--lpink);border-radius:2px;height:4px}
+#player.playing #eq i{animation:eq .8s ease-in-out infinite alternate}
+#eq i:nth-child(2){animation-delay:.2s!important}#eq i:nth-child(3){animation-delay:.4s!important}#eq i:nth-child(4){animation-delay:.1s!important}
+@keyframes eq{from{height:3px}to{height:14px}}
+#pp{width:32px;height:32px;border-radius:50%;border:0;background:var(--lpink);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none}
+#pp svg{width:14px;height:14px;fill:var(--green-d)}
+.confetti{position:fixed;top:-20px;width:10px;height:14px;z-index:60;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+</style>
+</head>
+<body class="locked">
+
+<!-- ============ COVER ============ -->
+<section id="cover">
+  <h1>i have something</h1>
+  <div class="sub">for you.</div>
+  <button id="env" aria-label="Buka amplop">
+    <svg viewBox="0 0 340 220">
+      <rect x="0" y="0" width="340" height="220" rx="6" fill="#5f7a2a"/>
+    </svg>
+    <div id="paper">Happy<br>Birthday! <small>♡</small></div>
+    <svg class="front" viewBox="0 0 340 220" style="position:absolute;inset:0">
+      <path d="M0 220 L170 105 L340 220 Z" fill="#76913a" stroke="#4a5e20" stroke-width="1.4"/>
+      <path d="M0 0 L170 118 L0 220 Z" fill="#6a842f" stroke="#4a5e20" stroke-width="1.4"/>
+      <path d="M340 0 L170 118 L340 220 Z" fill="#62792b" stroke="#4a5e20" stroke-width="1.4"/>
+      <g id="flap"><path d="M0 0 L340 0 L170 122 Z" fill="#86a043" stroke="#4a5e20" stroke-width="1.4" stroke-linejoin="round"/></g>
+      <g id="seal">
+        <g stroke="#5f7a2a" stroke-width="2" fill="none" stroke-linecap="round"><path d="M170 92 L170 60"/><path d="M170 74 L158 58"/><path d="M170 70 L184 54"/><path d="M170 62 L176 46"/></g>
+        <g fill="#f6efb0"><circle cx="158" cy="56" r="4"/><circle cx="184" cy="52" r="4"/><circle cx="176" cy="44" r="4"/><circle cx="168" cy="50" r="4"/><circle cx="160" cy="64" r="3"/><circle cx="190" cy="62" r="3"/></g>
+        <circle cx="170" cy="120" r="27" fill="#b8456f"/><circle cx="170" cy="120" r="22" fill="#e0709a"/>
+        <path d="M170 132 C150 117 156 105 164 107 C168 108 170 112 170 112 C170 112 172 108 176 107 C184 105 190 117 170 132Z" fill="#fde2ec"/>
+      </g>
+    </svg>
+  </button>
+  <div id="hintWrap"><div class="hint">
+    <svg viewBox="0 0 40 40" fill="none" stroke="#fde2ec" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M34 32 C16 34 8 26 10 10"/><path d="M4 17 L10 9 L17 15"/></svg>
+    <span>tap the envelope<br>to open</span></div></div>
+</section>
+
+<!-- ============ MAIN ============ -->
+<div id="main">
+<section id="letter">
+  <svg class="drip top" id="dripPink"></svg>
+  <div class="wrap">
+    <div class="title-row">
+      <div class="hatface">
+        <svg class="balloons" viewBox="0 0 250 250" shape-rendering="crispEdges" id="balloons"></svg>
+        <img class="face" alt="" src="face.png">
+        <svg class="hat" viewBox="0 0 130 120">
+          <path d="M65 10 L112 112 Q65 124 18 112 Z" fill="#6e86d8" stroke="#fff" stroke-width="6" stroke-linejoin="round"/>
+          <path d="M65 10 L112 112 Q65 124 18 112 Z" fill="#6e86d8"/>
+          <g fill="#f5d94a"><circle cx="62" cy="52" r="6"/><circle cx="84" cy="78" r="6"/><circle cx="46" cy="86" r="6"/><circle cx="68" cy="100" r="5"/><circle cx="98" cy="102" r="5"/><circle cx="32" cy="104" r="5"/></g>
+          <g fill="#fff6c6" stroke="#fff" stroke-width="2"><circle cx="65" cy="10" r="9"/><circle cx="55" cy="12" r="6"/><circle cx="75" cy="12" r="6"/><circle cx="65" cy="2" r="6"/></g>
+        </svg>
+      </div>
+      <h2 class="hb">HAPPY<br>BIRTHDAY</h2>
+    </div>
+
+    <div id="text">
+      <p class="dear">Dear you,</p>
+      <p>Happy birthday! Hari ini aku mau bilang terima kasih karena kamu udah lahir ke dunia ini. Seriously, dunia jadi tempat yang lebih seru dan lebih hangat karena ada kamu. Semoga di umur yang baru ini, kamu selalu sehat, bahagia, dan dikelilingi orang-orang yang tulus sayang sama kamu. May every day feel a little lighter than the last one.</p>
+      <p>Aku harap semua hal yang kamu usahain pelan-pelan jadi nyata. Kalau lagi capek, it's okay to rest. Kamu nggak harus kuat setiap saat, dan kamu udah melakukan yang terbaik.</p>
+      <p>Semoga tahun ini penuh dengan hal-hal kecil yang bikin kamu senyum: kopi enak, lagu favorit, dan kabar baik yang datang tanpa diduga. You deserve all of it, and more.</p>
+      <p>Aku tau nggak semua hari itu gampang. Ada hari yang rasanya berat banget, ada hari yang bikin kamu ragu sama diri sendiri. Tapi look at how far you've come. Kamu udah ngelewatin banyak hal, dan kamu masih di sini, masih berusaha, masih baik hati. That's something to be proud of. Di umur yang baru ini, semoga kamu lebih berani buat mulai hal-hal yang kamu pengen, lebih sayang sama diri sendiri, dan lebih sering bilang "aku pantas bahagia" tanpa merasa bersalah. Semoga rezekimu lancar, langkahmu dimudahkan, dan hatimu selalu tenang. Dan kalau suatu hari kamu merasa sendirian, inget aja: ada yang diam-diam doain kamu, ada yang selalu seneng lihat kamu bahagia. So keep going, okay?</p>
+      <p>Thank you for being you. Jangan pernah berubah jadi orang lain buat siapa pun, ya.</p>
+    </div>
+    <div class="sign">With love,<br>someone who's glad you exist</div>
+  </div>
+</section>
+
+<section id="jarsec">
+  <svg class="drip top" id="dripGreen"></svg>
+  <h3>Little notes, just for you</h3>
+  <p class="s">give it a little shake, or tap them one by one.</p>
+  <div id="jarbox">
+    <div id="cap"></div><div id="neck"></div>
+    <div id="jar"></div>
+    <div id="notes"></div>
+  </div>
+  <button class="btn" id="shake">Shake it!</button>
+  <footer>made with love ♡</footer>
+</section>
+</div>
+
+<div id="modal"><div id="card"><div class="ic" id="mic"></div><p id="mtext"></p><button id="mclose">close</button></div></div>
+
+<!-- ============ PLAYER ============ -->
+<div id="player">
+  <div id="disc"></div>
+  <div id="meta"><b id="mt">Pilih lagu</b><span id="ma">tap play to add a song</span></div>
+  <div id="eq"><i></i><i></i><i></i><i></i></div>
+  <button id="pp" aria-label="Play/Pause"><svg id="ppi" viewBox="0 0 14 14"><path d="M2 1 L13 7 L2 13Z"/></svg></button>
+  <input type="file" id="file" accept="audio/*" hidden>
+</div>
+<audio id="audio" loop></audio>
+
+<script>
+/* ===== EDIT DI SINI ===== */
+const NAME = "";              // isi nama temanmu, mis. "Rafi" (kosong = "Dear you,")
+const YT_URL = "";            // tempel link YouTube lagunya di sini (jalan setelah web di-hosting)
+const AUDIO_SRC = "";         // ATAU nama file mp3 di folder yang sama, mis. "lagu.mp3"
+const SONG_TITLE = "Happy Birthday to You", SONG_ARTIST = "NAYEON";
+const NOTES = [
+ "Kamu tuh lebih keren dari yang kamu kira.",
+ "Semoga hari ini ada es krim atau kopi enak buat kamu.",
+ "Kamu boleh istirahat. Dunia bakal nunggu.",
+ "Ada yang bangga banget sama kamu, serius.",
+ "Tawa kamu bikin suasana jadi lebih hangat.",
+ "Semoga semua rencana baikmu jalan satu-satu.",
+ "Kamu cukup, persis seperti kamu sekarang.",
+ "Semoga tahun ini lebih banyak kejutan manis.",
+ "Terima kasih udah jadi temen yang baik.",
+ "Jangan lupa makan, minum, dan senyum hari ini ya!"
+];
+/* ======================== */
+
+const $=s=>document.querySelector(s);
+if(NAME) document.querySelector('.dear').textContent="Dear "+NAME+",";
+
+/* --- drips (lelehan organik) --- */
+function rnd(seed){let s=seed;return()=>(s=(s*9301+49297)%233280)/233280}
+function renderDrips(svg,fill,hi,speck,seed){
+  const W=Math.max(320,svg.parentElement.clientWidth),H=150,B=34,r=rnd(seed);
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.setAttribute('height',H);
+  const f=x=>B+7*Math.sin(x/83+seed)+4*Math.sin(x/31+seed*2)+3*Math.sin(x/157);
+  const D=[];let x=18+r()*40;
+  while(x<W-30){
+    const hw=7+r()*9,br=hw*(1.12+r()*.28),fl=Math.min(13,hw*1.2),big=r()<.6;
+    const L=fl+2.6*br+(big?10+r()*58:r()*8);
+    D.push({cx:x+hw+fl,hw,br,fl,L});x+=2*(hw+fl)+10+r()*60;
+  }
+  let d=`M0 0 L${W} 0 L${W} ${f(W)} `,cur=W,extra='';
+  for(const p of D.slice().reverse()){
+    const by=f(p.cx),xr=p.cx+p.hw+p.fl,xl=p.cx-p.hw-p.fl,cy=by+p.L-p.br;
+    for(let px=cur;px>xr;px-=8)d+=`L${px} ${f(px)} `;
+    d+=`L${xr} ${f(xr)} Q${p.cx+p.hw} ${f(xr)} ${p.cx+p.hw} ${by+p.fl} `;
+    d+=`L${p.cx+p.hw} ${cy-p.br*1.7} C${p.cx+p.hw} ${cy-p.br*.6} ${p.cx+p.br} ${cy-p.br*.9} ${p.cx+p.br} ${cy} `;
+    d+=`A${p.br} ${p.br} 0 0 1 ${p.cx-p.br} ${cy} `;
+    d+=`C${p.cx-p.br} ${cy-p.br*.9} ${p.cx-p.hw} ${cy-p.br*.6} ${p.cx-p.hw} ${cy-p.br*1.7} `;
+    d+=`L${p.cx-p.hw} ${by+p.fl} Q${p.cx-p.hw} ${f(xl)} ${xl} ${f(xl)} `;
+    cur=xl;
+    if(p.L>46)extra+=`<path d="M${p.cx-p.hw*.45} ${by+p.fl+6} L${p.cx-p.hw*.45} ${cy-p.br*1.2}" stroke="${hi}" stroke-width="3" stroke-linecap="round" opacity=".55" fill="none"/>`;
+    extra+=`<ellipse cx="${p.cx-p.br*.35}" cy="${cy+p.br*.1}" rx="${p.br*.22}" ry="${p.br*.34}" fill="${hi}" opacity=".5"/>`;
+  }
+  for(let px=cur;px>=0;px-=8)d+=`L${px} ${f(px)} `;
+  d+='Z';
+  // kilau di sepanjang tepi atas lelehan
+  for(let i=0;i<5;i++){const sx=r()*(W-200)+20,len=80+r()*140;
+    extra+=`<path d="M${sx} ${f(sx)-12} Q${sx+len/2} ${f(sx+len/2)-15} ${sx+len} ${f(sx+len)-12}" stroke="${hi}" stroke-width="3" stroke-linecap="round" opacity=".45" fill="none"/>`;}
+  // taburan kecil
+  for(let i=0;i<Math.round(W/55);i++){const sx=r()*W,sy=5+r()*(B-24),a=r()*180;
+    extra+=`<rect x="${sx}" y="${sy}" width="7" height="2.4" rx="1.2" fill="${speck}" opacity=".5" transform="rotate(${a} ${sx} ${sy})"/>`;}
+  // setetes yang hampir jatuh
+  const q=D[Math.floor(D.length/3)];
+  if(q)extra+=`<circle cx="${q.cx+q.hw+q.fl+26}" cy="${f(q.cx)+q.L+14}" r="6.5" fill="${fill}"/><circle cx="${q.cx+q.hw+q.fl+24}" cy="${f(q.cx)+q.L+12}" r="1.8" fill="${hi}" opacity=".6"/>`;
+  svg.innerHTML=`<path d="${d}" fill="${fill}"/>`+extra;
+}
+function drawDrips(){
+  renderDrips($('#dripPink'),'#f4a6c4','#ffffff','#c4567f',3);
+  renderDrips($('#dripGreen'),'#688030','#b2cc6a','#3d4d17',11);
+}
+drawDrips();
+let _rz;addEventListener('resize',()=>{clearTimeout(_rz);_rz=setTimeout(drawDrips,150)});
+
+/* --- pixel balloons --- */
+(function(){
+  const S=[ // [x,y,color]
+  ];
+  const svg=$('#balloons');let out='';
+  const px=(x,y,w,h,c)=>out+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${c}"/>`;
+  function balloon(cx,cy,c,dk){ // ~ 40x52 pixel balloon, pixel=4
+    const rows=[[3,5],[2,7],[1,9],[1,9],[0,11],[0,11],[0,11],[0,11],[1,9],[1,9],[2,7],[3,5],[4,3]];
+    rows.forEach(([o,n],i)=>{px(cx+o*4,cy+i*4,n*4,4,c);px(cx+o*4,cy+i*4,4,4,dk);px(cx+(o+n-1)*4,cy+i*4,4,4,dk);});
+    px(cx+8,cy+8,4,8,'#ffffff55');
+    px(cx+16,cy+52,12,4,dk);px(cx+20,cy+56,4,4,dk);
+    // wavy string
+    for(let i=0;i<9;i++){px(cx+20+(i%2?4:-4)*(i%4<2?1:-1)*0+ (i%4<2?0:4), cy+60+i*4,4,4,'#a0452b');}
+  }
+  balloon(24,100,'#f08a1d','#b3500c');
+  balloon(8,140,'#f5c53a','#c98e10');
+  balloon(172,60,'#f08a1d','#b3500c');
+  balloon(190,110,'#f08fb4','#b84a76');
+  svg.innerHTML=out;
+  // reposition: yellow top-left, orange mid-left, orange top-right, pink right
+  svg.innerHTML=''; out='';
+  balloon(14,34,'#f5c53a','#c98e10');
+  balloon(0,92,'#f08a1d','#b3500c');
+  balloon(184,40,'#f08a1d','#b3500c');
+  balloon(204,90,'#f08fb4','#b84a76');
+  svg.innerHTML=out;
+})();
+
+/* --- icons --- */
+const IC={
+ heart:c=>`<svg viewBox="0 0 24 24"><path d="M12 21 C3 14 4 6.5 9 6.5 C10.8 6.5 12 8 12 8 C12 8 13.2 6.5 15 6.5 C20 6.5 21 14 12 21Z" fill="${c}"/></svg>`,
+ star:c=>`<svg viewBox="0 0 24 24"><path d="M12 3 L14.6 9 L21 9.6 L16.2 13.8 L17.7 20.2 L12 16.8 L6.3 20.2 L7.8 13.8 L3 9.6 L9.4 9Z" fill="${c}"/></svg>`,
+ gift:c=>`<svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="1.5" fill="${c}"/><rect x="3" y="7" width="18" height="4" rx="1" fill="${c}"/><path d="M12 7 V20" stroke="#0003" stroke-width="2"/><path d="M12 7 C8 2 4 6 9 7Z M12 7 C16 2 20 6 15 7Z" fill="${c}"/></svg>`,
+ cup:c=>`<svg viewBox="0 0 24 24"><path d="M4 9 H17 V15 A5 5 0 0 1 12 20 H9 A5 5 0 0 1 4 15Z" fill="${c}"/><path d="M17 11 H19 A2.5 2.5 0 0 1 19 16 H16.5" fill="none" stroke="${c}" stroke-width="2"/><path d="M8 3 V6 M12 3 V6" stroke="${c}" stroke-width="2" stroke-linecap="round"/></svg>`,
+ rainbow:c=>`<svg viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2.6" stroke-linecap="round"><path d="M3 19 A9 9 0 0 1 21 19"/><path d="M7.5 19 A4.5 4.5 0 0 1 16.5 19"/></svg>`,
+ sun:c=>`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5" fill="${c}"/><g stroke="${c}" stroke-width="2.2" stroke-linecap="round"><path d="M12 2.5V5M12 19V21.5M2.5 12H5M19 12H21.5M5.3 5.3L7 7M17 17L18.7 18.7M5.3 18.7L7 17M17 7L18.7 5.3"/></g></svg>`,
+ music:c=>`<svg viewBox="0 0 24 24"><path d="M9 18 V6 L19 4 V16" fill="none" stroke="${c}" stroke-width="2.2" stroke-linejoin="round"/><circle cx="7" cy="18" r="3" fill="${c}"/><circle cx="17" cy="16" r="3" fill="${c}"/></svg>`,
+ bolt:c=>`<svg viewBox="0 0 24 24"><path d="M13 2 L5 13.5 H11 L10 22 L19 10 H13Z" fill="${c}"/></svg>`,
+ mail:c=>`<svg viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2" fill="${c}"/><path d="M3.5 7 L12 13 L20.5 7" fill="none" stroke="#0004" stroke-width="1.8"/></svg>`,
+ flower:c=>`<svg viewBox="0 0 24 24" fill="${c}"><circle cx="12" cy="6.5" r="4"/><circle cx="17.5" cy="12" r="4"/><circle cx="12" cy="17.5" r="4"/><circle cx="6.5" cy="12" r="4"/><circle cx="12" cy="12" r="2.4" fill="#fff8"/></svg>`
+};
+const KEYS=Object.keys(IC);
+const STY=[['g','#f4a6c4'],['c','#cd638c'],['p','#688030']];
+
+/* --- envelope --- */
+const env=$('#env');
+env.onclick=()=>{
+  if(env.classList.contains('open'))return;
+  env.classList.add('open');$('#cover').classList.add('opened');
+  setTimeout(()=>$('#paper').classList.add('out'),1500);
+  setTimeout(()=>{
+    $('#main').classList.add('show');document.body.classList.remove('locked');drawDrips();
+    $('#letter').scrollIntoView({behavior:'smooth'});
+    initReveal();
+    burst();
+  },2700);
+};
+function burst(){
+  const cols=['#f4a6c4','#f5c53a','#f08a1d','#fff8f0','#9fc04a'];
+  for(let i=0;i<46;i++){
+    const e=document.createElement('i');e.className='confetti';
+    e.style.left=Math.random()*100+'vw';e.style.background=cols[i%cols.length];
+    e.style.animationDuration=(2.4+Math.random()*2.4)+'s';e.style.animationDelay=(Math.random()*.6)+'s';
+    e.style.borderRadius=Math.random()<.4?'50%':'2px';
+    document.body.appendChild(e);setTimeout(()=>e.remove(),6000);
+  }
+}
+
+/* --- word-by-word reveal on scroll --- */
+function initReveal(){
+  document.querySelectorAll('#text p').forEach(p=>{
+    if(p.dataset.done)return;p.dataset.done=1;
+    const words=p.textContent.split(' ');
+    p.innerHTML=words.map(w=>`<span class="w">${w.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</span>`).join(' ');
+  });
+  const ws=[...document.querySelectorAll('#text .w')];
+  const upd=()=>{
+    const line=innerHeight*.82;
+    ws.forEach(w=>{ if(w.getBoundingClientRect().top<line) w.classList.add('on'); });
+  };
+  addEventListener('scroll',upd,{passive:true});addEventListener('resize',upd);upd();
+}
+
+/* --- jar physics --- */
+const W=180,H=300,S=40,R=20;
+const box=$('#notes');
+const items=NOTES.map((msg,i)=>{
+  const b=document.createElement('button');
+  const [cls,col]=STY[i%3];const k=KEYS[i%KEYS.length];
+  b.className='note '+cls;b.innerHTML=IC[k](col);b.setAttribute('aria-label','Buka catatan '+(i+1));
+  box.appendChild(b);
+  const o={el:b,msg,k,col,cls,x:30+Math.random()*(W-100),y:-50-i*38,vx:0,vy:0,a:Math.random()*360,va:(Math.random()-.5)*8};
+  b.onclick=()=>openNote(o);
+  return o;
+});
+function step(){
+  for(const o of items){
+    o.vy+=.55;o.x+=o.vx;o.y+=o.vy;o.a+=o.va;o.va*=.98;
+    if(o.x<0){o.x=0;o.vx*=-.45;o.va*=.6}
+    if(o.x>W-S){o.x=W-S;o.vx*=-.45;o.va*=.6}
+    if(o.y>H-S-4){o.y=H-S-4;o.vy*=-.35;o.vx*=.85;o.va*=.8;if(Math.abs(o.vy)<1)o.vy=0}
+    if(o.y<-300)o.y=-300;
+  }
+  for(let i=0;i<items.length;i++)for(let j=i+1;j<items.length;j++){
+    const a=items[i],b=items[j];
+    let dx=(b.x-a.x),dy=(b.y-a.y),d=Math.hypot(dx,dy)||.01,min=S*.92;
+    if(d<min){const nx=dx/d,ny=dy/d,p=(min-d)/2;
+      a.x-=nx*p;a.y-=ny*p;b.x+=nx*p;b.y+=ny*p;
+      const rv=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny;
+      if(rv<0){const im=-rv*.55;a.vx-=nx*im;a.vy-=ny*im;b.vx+=nx*im;b.vy+=ny*im;}
+      a.vx*=.99;b.vx*=.99;
+    }
+  }
+  for(const o of items) o.el.style.transform=`translate(${o.x}px,${o.y}px) rotate(${o.a}deg)`;
+  requestAnimationFrame(step);
+}
+step();
+function shake(){
+  const jb=$('#jarbox');jb.classList.remove('shake');void jb.offsetWidth;jb.classList.add('shake');
+  for(const o of items){o.vy=-(9+Math.random()*10);o.vx=(Math.random()-.5)*16;o.va=(Math.random()-.5)*34;}
+}
+$('#shake').onclick=shake;
+$('#jarbox').addEventListener('dblclick',shake);
+
+function openNote(o){
+  $('#mic').innerHTML=IC[o.k]('#f4a6c4');$('#mtext').textContent=o.msg;
+  $('#modal').classList.add('show');o.el.classList.add('read');
+}
+$('#mclose').onclick=()=>$('#modal').classList.remove('show');
+$('#modal').onclick=e=>{if(e.target.id==='modal')$('#modal').classList.remove('show')};
+
+/* --- music player --- */
+const au=$('#audio'),pl=$('#player'),file=$('#file');
+$('#mt').textContent=SONG_TITLE;$('#ma').textContent=SONG_ARTIST;
+const PLAY='M2 1 L13 7 L2 13Z',PAUSE='M2 1 H5.5 V13 H2Z M8.5 1 H12 V13 H8.5Z';
+function setIcon(p){$('#ppi').innerHTML=`<path d="${p?PAUSE:PLAY}"/>`;pl.classList.toggle('playing',p)}
+if(AUDIO_SRC)au.src=AUDIO_SRC;
+/* YouTube (opsional) */
+const ytId=(u=>{const m=(u||'').match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([\w-]{11})/);return m?m[1]:null})(YT_URL);
+let yt=null,ytReady=false,ytWant=false;
+if(ytId){
+  const d=document.createElement('div');d.style.cssText='position:fixed;left:0;top:0;width:200px;height:200px;opacity:0;pointer-events:none;z-index:-1';
+  d.innerHTML='<div id="ytp"></div>';document.body.appendChild(d);
+  const s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';document.head.appendChild(s);
+  window.onYouTubeIframeAPIReady=()=>{yt=new YT.Player('ytp',{width:'200',height:'200',videoId:ytId,
+    playerVars:{playsinline:1,loop:1,playlist:ytId},
+    events:{onReady:()=>{ytReady=true;if(ytWant)yt.playVideo()},onStateChange:e=>setIcon(e.data===1||e.data===3)}})};
+}
+$('#pp').onclick=()=>{
+  if(ytId){ if(!ytReady){ytWant=true;return;} yt.getPlayerState()===1?yt.pauseVideo():yt.playVideo(); return; }
+  if(!au.src){file.click();return;}
+  if(au.paused)au.play().then(()=>setIcon(true)).catch(()=>{});else{au.pause();setIcon(false)}
+};
+file.onchange=()=>{
+  const f=file.files[0];if(!f)return;
+  au.src=URL.createObjectURL(f);
+  $('#mt').textContent=f.name.replace(/\.[^.]+$/,'');$('#ma').textContent='now playing';
+  au.play().then(()=>setIcon(true)).catch(()=>{});
+};
+env.addEventListener('click',()=>{ if(ytId){ if(ytReady)yt.playVideo(); else ytWant=true; return;} if(au.src&&au.paused)au.play().then(()=>setIcon(true)).catch(()=>{}); });
+</script>
+</body>
+</html>
